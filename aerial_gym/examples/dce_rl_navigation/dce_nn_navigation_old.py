@@ -20,10 +20,10 @@ from PIL import Image
 
 def sample_command(args):
     use_warp = True
-    headless = True#args.headless
-    seg_frames = []
-    depth_frames = []
-    merged_image_frames = []
+    headless = args.headless
+    # seg_frames = []
+    # depth_frames = []
+    # merged_image_frames = []
 
     rl_task = task_registry.make_task(
         "dce_navigation_task", seed=42, use_warp=use_warp, headless=headless
@@ -57,60 +57,60 @@ def sample_command(args):
             print(f"Resetting environments {truncated_envs} due to Timeout")
         nn_model.reset(reset_ids)
 
-    # Uncomment the below lines to save the frames from an episode as a GIF
-        # save obs to file as a .gif
-        image1 = (
-            255.0 * rl_task.obs_dict["depth_range_pixels"][0, 0].cpu().numpy()
-        ).astype(np.uint8)
-        seg_image1 = rl_task.obs_dict["segmentation_pixels"][0, 0].cpu().numpy()
-        seg_image1[seg_image1 <= 0] = seg_image1[seg_image1 > 0].min()
-        seg_image1_normalized = (seg_image1 - seg_image1.min()) / (
-            seg_image1.max() - seg_image1.min()
-        )
+    # # Uncomment the below lines to save the frames from an episode as a GIF
+    #     # save obs to file as a .gif
+    #     image1 = (
+    #         255.0 * rl_task.obs_dict["depth_range_pixels"][0, 0].cpu().numpy()
+    #     ).astype(np.uint8)
+    #     seg_image1 = rl_task.obs_dict["segmentation_pixels"][0, 0].cpu().numpy()
+    #     seg_image1[seg_image1 <= 0] = seg_image1[seg_image1 > 0].min()
+    #     seg_image1_normalized = (seg_image1 - seg_image1.min()) / (
+    #         seg_image1.max() - seg_image1.min()
+    #     )
 
-        # set colormap to plasma in matplotlib
-        seg_image1_normalized_plasma = matplotlib.cm.plasma(seg_image1_normalized)
-        seg_image1 = Image.fromarray((seg_image1_normalized_plasma * 255.0).astype(np.uint8))
+    #     # set colormap to plasma in matplotlib
+    #     seg_image1_normalized_plasma = matplotlib.cm.plasma(seg_image1_normalized)
+    #     seg_image1 = Image.fromarray((seg_image1_normalized_plasma * 255.0).astype(np.uint8))
 
-        depth_image1 = Image.fromarray(image1)
-        image_4d = np.zeros((image1.shape[0], image1.shape[1], 4))
-        image_4d[:, :, 0] = image1
-        image_4d[:, :, 1] = image1
-        image_4d[:, :, 2] = image1
-        image_4d[:, :, 3] = 255.0
-        merged_image = np.concatenate((image_4d, seg_image1_normalized_plasma * 255.0), axis=0)
-        # save frames to array:
-        seg_frames.append(seg_image1)
-        depth_frames.append(depth_image1)
-        merged_image_frames.append(Image.fromarray(merged_image.astype(np.uint8)))
-        if termination[0] or truncation[0]:
-            print("i", i)
-            rl_task.reset()
-            # save frames as a gif:
-            seg_frames[0].save(
-                f"output/seg_frames_{i}_{termination[0]}_{truncation[0]}.gif",
-                save_all=True,
-                append_images=seg_frames[1:],
-                duration=100,
-                loop=0,
-            )
-            depth_frames[0].save(
-                f"output/depth_frames_{i}_{termination[0]}_{truncation[0]}.gif",
-                save_all=True,
-                append_images=depth_frames[1:],
-                duration=100,
-                loop=0,
-            )
-            merged_image_frames[0].save(
-                f"output/merged_image_frames_{i}_{termination[0]}_{truncation[0]}.gif",
-                save_all=True,
-                append_images=merged_image_frames[1:],
-                duration=100,
-                loop=0,
-            )
-            seg_frames = []
-            depth_frames = []
-            merged_image_frames = []
+    #     depth_image1 = Image.fromarray(image1)
+    #     image_4d = np.zeros((image1.shape[0], image1.shape[1], 4))
+    #     image_4d[:, :, 0] = image1
+    #     image_4d[:, :, 1] = image1
+    #     image_4d[:, :, 2] = image1
+    #     image_4d[:, :, 3] = 255.0
+    #     merged_image = np.concatenate((image_4d, seg_image1_normalized_plasma * 255.0), axis=0)
+    #     # save frames to array:
+    #     seg_frames.append(seg_image1)
+    #     depth_frames.append(depth_image1)
+    #     merged_image_frames.append(Image.fromarray(merged_image.astype(np.uint8)))
+    # if termination[0] or truncation[0]:
+    #     print("i", i)
+    #     rl_task.reset()
+    #     # save frames as a gif:
+    #     seg_frames[0].save(
+    #         f"seg_frames_{i}.gif",
+    #         save_all=True,
+    #         append_images=seg_frames[1:],
+    #         duration=100,
+    #         loop=0,
+    #     )
+    #     depth_frames[0].save(
+    #         f"depth_frames_{i}.gif",
+    #         save_all=True,
+    #         append_images=depth_frames[1:],
+    #         duration=100,
+    #         loop=0,
+    #     )
+    #     merged_image_frames[0].save(
+    #         f"merged_image_frames_{i}.gif",
+    #         save_all=True,
+    #         append_images=merged_image_frames[1:],
+    #         duration=100,
+    #         loop=0,
+    #     )
+    #     seg_frames = []
+    #     depth_frames = []
+    #     merged_image_frames = []
 
 
 def get_network(num_envs):
