@@ -1,0 +1,1 @@
+python play_record.py --task=position_setpoint_task --file=ppo_aerial_quad.yaml --checkpoint=/root/workspace/aerial/aerial_gym_simulator/aerial_gym/rl_training/rl_games/runs/gen_ppo_09-13-26-33/nn/gen_ppo.pth --record_episodes=1 --gif_fps=12 --record_dir=./recordings --use_warp=True --record_env_name=env_with_obstacles --gif_mode=depth_seg_color --max_record_steps=100

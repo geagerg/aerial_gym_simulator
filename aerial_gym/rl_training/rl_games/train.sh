@@ -1,0 +1,1 @@
+python runner.py --train --task position_setpoint_task --file ppo_aerial_quad.yaml --num_envs 1024 --headless True
